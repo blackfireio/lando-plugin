@@ -36,7 +36,7 @@ services, assert responses, and extract data from HTML/XML/JSON responses.
 
 ## Installation
 
-- Download and extract the archive of the latest version;
+- [Download and extract the archive of the latest version](https://github.com/blackfireio/lando-plugin/releases);
 - Move the extracted `blackfire` folder to the Lando plugins folder:
 
 ```bash
