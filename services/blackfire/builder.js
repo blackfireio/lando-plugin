@@ -15,6 +15,7 @@ module.exports = {
         client_id: '',
         client_token: '',
         log_level: '1',
+        app_service: 'appserver',
         port: '8307',
         meUser: 'blackfire', // Ensure to use the appropriate user within the container.
     },
@@ -44,10 +45,32 @@ module.exports = {
             };
 
             // Add necessary steps to the app container to install blackfire CLI and the PHP probe.
-            utils.addBuildStep(['wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add -'], options._app, 'appserver', 'build_as_root_internal');
-            utils.addBuildStep(['echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list'], options._app, 'appserver', 'build_as_root_internal');
-            utils.addBuildStep(['apt update -y'], options._app, 'appserver', 'build_as_root_internal');
-            utils.addBuildStep(['apt install blackfire-php blackfire'], options._app, 'appserver', 'build_as_root_internal');
+            utils.addBuildStep(
+                [
+                    'wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add -',
+                    'echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list',
+                    'apt update -y',
+                ],
+                options._app,
+                options.app_service,
+                'build_as_root_internal'
+            );
+
+            const appService = _.get(options._app, `config.services.${options.app_service}`);
+            if (appService.type.startsWith('php')) {
+                utils.addBuildStep(
+                    [
+                        'apt install blackfire-php blackfire',
+                        '/helpers/install-blackfire-player.sh',
+                    ],
+                    options._app,
+                    options.app_service,
+                    'build_as_root_internal'
+                );
+            } else {
+                // Only install blackfire CLI
+                utils.addBuildStep(['apt install blackfire'], options._app, options.app_service, 'build_as_root_internal');
+            }
 
             // Send it downstream
             super(id, options, {services: _.set({}, options.name, blackfire)});
