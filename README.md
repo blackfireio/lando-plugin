@@ -104,5 +104,5 @@ services:
 - It only works with Debian-based application containers, which is the case for
   most Lando recipes;
 - The probe is automatically installed in PHP application services. For Python,
-  you need to install the PIP package and run use `blackfire-python` instead of
+  you need to install the PIP package and use `blackfire-python` instead of
   `python`.
