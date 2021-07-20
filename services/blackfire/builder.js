@@ -50,6 +50,7 @@ module.exports = {
                     [
                         '/helpers/install-blackfire-probe.sh',
                         '/helpers/install-blackfire-cli.sh',
+                        '/helpers/install-blackfire-player.sh',
                     ],
                     options._app,
                     options.app_service,
