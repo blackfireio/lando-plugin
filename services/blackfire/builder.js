@@ -44,24 +44,12 @@ module.exports = {
                 },
             };
 
-            // Add necessary steps to the app container to install blackfire CLI and the PHP probe.
-            utils.addBuildStep(
-                [
-                    'wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add -',
-                    'echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list',
-                    'apt update -y',
-                ],
-                options._app,
-                options.app_service,
-                'build_as_root_internal'
-            );
-
             const appService = _.get(options._app, `config.services.${options.app_service}`);
-            if (appService.type.startsWith('php')) {
+            if (appService.type.includes('php')) {
                 utils.addBuildStep(
                     [
-                        'apt install blackfire-php blackfire',
-                        '/helpers/install-blackfire-player.sh',
+                        '/helpers/install-blackfire-probe.sh',
+                        '/helpers/install-blackfire-cli.sh',
                     ],
                     options._app,
                     options.app_service,
@@ -69,7 +57,7 @@ module.exports = {
                 );
             } else {
                 // Only install blackfire CLI
-                utils.addBuildStep(['apt install blackfire'], options._app, options.app_service, 'build_as_root_internal');
+                utils.addBuildStep(['/helpers/install-blackfire-cli.sh'], options._app, options.app_service, 'build_as_root_internal');
             }
 
             // Send it downstream
