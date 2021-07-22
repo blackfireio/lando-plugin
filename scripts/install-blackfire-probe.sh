@@ -2,6 +2,9 @@
 set -e
 
 PHP_VERSION=$(php -v | sed -nE "s/^PHP (.+) \(cli\).+/\1/p" | sed -nE "s/^([^.]+)\.([^.]+)\..+/\1\2/p")
+if [[ -n $(php -v | grep ZTS)  ]]; then
+  PHP_VERSION=$PHP_VERSION-zts
+fi
 EXTENSION_DIR=$(php -i | grep "^extension_dir =>" | sed -nE "s/extension_dir => ([^ =>]+).+/\1/p")
 
 echo "Installing Blackfire Probe for PHP"
