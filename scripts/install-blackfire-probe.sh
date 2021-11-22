@@ -16,6 +16,12 @@ rm $EXTENSION_DIR/blackfire-*.sha
 if [[ -z $(php -v | grep blackfire) ]]; then
   echo "Activating the Blackfire Probe for PHP."
   INI_DIR=$(php --ini | grep "additional \.ini files" | sed -sE "s/^Scan for additional \.ini files in: (\/.+)$/\1/")
+
+  # Verify target directory exists; create it if not
+  if [[ ! -d "${INI_DIR}" ]]; then
+  	mkdir -p "${INI_DIR}"
+  fi
+
   cat << EOF > $INI_DIR/blackfire.ini
 [blackfire]
 extension=blackfire.so
