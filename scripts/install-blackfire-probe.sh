@@ -7,8 +7,9 @@ if [[ -n $(php -v | grep ZTS)  ]]; then
 fi
 EXTENSION_DIR=$(php -i | grep "^extension_dir =>" | sed -nE "s/extension_dir => ([^ =>]+).+/\1/p")
 
-echo "Installing Blackfire Probe for PHP"
-(cd /tmp && wget -nv -N "https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$PHP_VERSION")
+ARCHITECTURE=$(uname -m)
+echo "Installing Blackfire Probe for PHP ($ARCHITECTURE)"
+(cd /tmp && wget -nv -N "https://blackfire.io/api/v1/releases/probe/php/linux/$ARCHITECTURE/$PHP_VERSION")
 tar -xzf /tmp/$PHP_VERSION -C $EXTENSION_DIR/
 mv $EXTENSION_DIR/blackfire-*.so $EXTENSION_DIR/blackfire.so
 rm $EXTENSION_DIR/blackfire-*.sha
