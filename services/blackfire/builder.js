@@ -22,6 +22,14 @@ module.exports = {
     parent: '_service',
     builder: (parent, config) => class LandoBlackfire extends parent {
         constructor(id, options = {}) {
+            // set a default app_service using the first service in options._app.info
+            if (options._app.hasOwnProperty('info') && options._app.info instanceof Array) {
+            	const closestService = _.first(options._app.info);
+            	//now double-check to make sure the service object exists in config services. 
+            	if(options._app.config.services.hasOwnProperty(closestService.service)) {
+            		config.app_service = closestService.service;
+            	} 
+            }
             options = _.merge({}, config, options);
 
             // Ensure that the credentials are correctly set.
